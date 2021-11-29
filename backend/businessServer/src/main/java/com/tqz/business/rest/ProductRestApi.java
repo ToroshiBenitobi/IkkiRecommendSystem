@@ -1,6 +1,7 @@
 package com.tqz.business.rest;
 
 import com.tqz.business.model.domain.Product;
+import com.tqz.business.model.domain.Rating;
 import com.tqz.business.model.domain.User;
 import com.tqz.business.model.recom.Recommendation;
 import com.tqz.business.model.request.*;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RequestMapping("/rest/product")
@@ -100,9 +102,9 @@ public class ProductRestApi {
      * @param model
      * @return
      */
-    @RequestMapping(value = "/contentbased/{id}", produces = "application/json", method = RequestMethod.GET)
+    @RequestMapping(value = "/contentbased", produces = "application/json", method = RequestMethod.GET)
     @ResponseBody
-    public Model getContentBasedProducts(@PathVariable("id") int id, Model model) {
+    public Model getContentBasedProducts(@RequestParam("productId") int id, Model model) {
         List<Recommendation> recommendations = null;
         try {
             recommendations = recommenderService.getContentBasedRecommendations(new ContentBasedRecommendationRequest(id));
@@ -125,8 +127,34 @@ public class ProductRestApi {
     @RequestMapping(value = "/info/{id}", produces = "application/json", method = RequestMethod.GET)
     @ResponseBody
     public Model getProductInfo(@PathVariable("id") int id, Model model) {
-        model.addAttribute("success", true);
-        model.addAttribute("product", productService.findByProductId(id));
+        Product product = productService.findByProductId(id);
+        if (null == product) {
+            model.addAttribute("success", false);
+        } else {
+            model.addAttribute("success", true);
+        }
+        model.addAttribute("product", product);
+        return model;
+    }
+
+    /**
+     * 获取单个商品的信息
+     *
+     * @param id
+     * @param model
+     * @return
+     */
+    @RequestMapping(value = "/info", produces = "application/json", method = RequestMethod.GET)
+    @ResponseBody
+    public Model getProductInfo(@RequestParam("productId") int id, @RequestParam("userId") int userId, Model model) {
+        Product product = productService.findByProductId(id);
+        if (null == product) {
+            model.addAttribute("success", false);
+        } else {
+            model.addAttribute("success", true);
+            productService.addBrowsingHistory(new AddBrowsingHistoryRequest(userId, id));
+        }
+        model.addAttribute("product", product);
         return model;
     }
 
@@ -153,11 +181,11 @@ public class ProductRestApi {
         return model;
     }
 
-    @RequestMapping(value = "/rate/{id}", produces = "application/json", method = RequestMethod.GET)
+    @RequestMapping(value = "/rating", produces = "application/json", method = RequestMethod.GET)
     @ResponseBody
-    public Model rateToProduct(@PathVariable("id") int id, @RequestParam("score") Double score, @RequestParam("username") String username, Model model) {
+    public Model rateToProduct(@RequestParam("productId") int id, @RequestParam("score") Double score, @RequestParam("userId") int userId, Model model) {
         try {
-            User user = userService.findByUsername(username);
+            User user = userService.findByUserId(userId);
             ProductRatingRequest request = new ProductRatingRequest(user.getUserId(), id, score);
             boolean complete = ratingService.productRating(request);
             // 埋点日志
@@ -176,6 +204,37 @@ public class ProductRestApi {
         }
         return model;
     }
+
+    @RequestMapping(value = "/rating/info", produces = "application/json", method = RequestMethod.GET)
+    @ResponseBody
+    public Model getRating(@RequestParam("productId") int productId, @RequestParam("userId") int userId, Model model) {
+        Rating rating = null;
+        try {
+            rating = ratingService.findRating(userId, productId);
+            model.addAttribute("success", true);
+            model.addAttribute("rating", rating);
+        } catch (Exception e) {
+            model.addAttribute("success", false);
+            model.addAttribute("msg", e.getMessage());
+        }
+        return model;
+    }
+
+    @RequestMapping(value = "/rating/infos", produces = "application/json", method = RequestMethod.GET)
+    @ResponseBody
+    public Model getRatings(@RequestParam("productId") int productId, Model model) {
+        List<Rating> ratings = new ArrayList<>();
+        try {
+            ratings = ratingService.findRatingsByProductId(new GetRatingsRequest(productId));
+            model.addAttribute("success", true);
+            model.addAttribute("ratings", ratings);
+        } catch (Exception e) {
+            model.addAttribute("success", false);
+            model.addAttribute("msg", e.getMessage());
+        }
+        return model;
+    }
+
 
     /**
      * 离线推荐
@@ -222,6 +281,24 @@ public class ProductRestApi {
         } catch (Exception e) {
             model.addAttribute("success", false);
             model.addAttribute("msg", e.getMessage());
+        }
+        return model;
+    }
+
+    @RequestMapping(value = "/history", produces = "application/json", method = RequestMethod.GET)
+    @ResponseBody
+    public Model getBrowsingHistoryProducts(@RequestParam("username") String username, @RequestParam("num") int num, Model model) {
+        User user = null;
+        List<Product> products = null;
+        try {
+            user = userService.findByUsername(username);
+            products = productService.getBrowsingHistory(new BrowsingHistoryRequest(user.getUserId(), num));
+            model.addAttribute("success", true);
+            model.addAttribute("products", products);
+        } catch (Exception e) {
+            model.addAttribute("success", false);
+            model.addAttribute("msg", e.getMessage());
+            e.printStackTrace();
         }
         return model;
     }

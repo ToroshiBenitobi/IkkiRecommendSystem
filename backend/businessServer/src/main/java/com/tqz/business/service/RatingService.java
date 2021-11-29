@@ -1,6 +1,7 @@
 package com.tqz.business.service;
 
 import com.tqz.business.model.domain.Rating;
+import com.tqz.business.model.request.GetRatingsRequest;
 import com.tqz.business.model.request.ProductRatingRequest;
 import com.tqz.business.utils.Constant;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -16,6 +17,8 @@ import org.springframework.stereotype.Service;
 import redis.clients.jedis.Jedis;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class RatingService {
@@ -37,7 +40,7 @@ public class RatingService {
         return ratingCollection;
     }
 
-    private Rating documentToRating(Document document) {
+    public Rating documentToRating(Document document) {
         Rating rating = null;
         try {
             rating = objectMapper.readValue(JSON.serialize(document), Rating.class);
@@ -51,7 +54,7 @@ public class RatingService {
     public boolean productRating(ProductRatingRequest request) {
         Rating rating = new Rating(request.getUserId(), request.getProductId(), request.getScore());
         updateRedis(rating);
-        if (ratingExist(rating.getUserId(), rating.getUserId())) {
+        if (ratingExist(rating.getUserId(), rating.getProductId())) {
             return updateRating(rating);
         } else {
             return newRating(rating);
@@ -88,7 +91,7 @@ public class RatingService {
         return true;
     }
 
-    private Rating findRating(int userId, int productId) {
+    public Rating findRating(int userId, int productId) {
         BasicDBObject basicDBObject = new BasicDBObject();
         basicDBObject.append("userId", userId);
         basicDBObject.append("productId", productId);
@@ -96,6 +99,21 @@ public class RatingService {
         if (documents.first() == null)
             return null;
         return documentToRating(documents.first());
+    }
+
+    public List<Rating> findRatingsByProductId(GetRatingsRequest request) {
+        BasicDBObject basicDBObject = new BasicDBObject();
+        basicDBObject.append("productId", request.getProductId());
+        FindIterable<Document> documents = getRatingCollection().find(basicDBObject);
+        if (documents.first() == null) {
+            System.out.println("null");
+            return null;
+        }
+        List<Rating> ratings = new ArrayList<>();
+        for (Document document : documents) {
+            ratings.add(documentToRating(document));
+        }
+        return ratings;
     }
 
 }

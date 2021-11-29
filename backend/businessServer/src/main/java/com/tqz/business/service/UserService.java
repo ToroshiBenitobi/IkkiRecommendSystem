@@ -86,6 +86,13 @@ public class UserService {
         return documentToUser(user);
     }
 
+    public User findByUserId(int userId) {
+        Document user = getUserCollection().find(new Document("userId", userId)).first();
+        if (null == user || user.isEmpty())
+            return null;
+        return documentToUser(user);
+    }
+
     public boolean updateUser(User user) {
         getUserCollection().updateOne(Filters.eq("userId", user.getUserId()), new Document().append("$set", new Document("first", user.isFirst())));
         getUserCollection().updateOne(Filters.eq("userId", user.getUserId()), new Document().append("$set", new Document("prefGenres", user.getPrefGenres())));

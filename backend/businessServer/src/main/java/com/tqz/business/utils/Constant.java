@@ -8,11 +8,15 @@ public class Constant {
 
     public static String MONGODB_USER_COLLECTION = "User";
 
+    public static String MONGODB_OFFER_COLLECTION = "Offer";
+
     public static String MONGODB_PRODUCT_COLLECTION = "Product";
 
     public static String MONGODB_RATING_COLLECTION = "Rating";
 
     public static String MONGODB_AVERAGE_PRODUCTS_SCORE_COLLECTION = "AverageProducts";
+
+    public static String HISTORY_PRODUCT_COLLECTION = "BrowsingHistory";
 
     public static String MONGODB_PRODUCT_RECS_COLLECTION = "ProductRecs";
 

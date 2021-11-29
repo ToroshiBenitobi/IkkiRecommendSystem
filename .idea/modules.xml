@@ -2,7 +2,15 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/backend/recommender/ContentRecommender/ContentRecommender.iml" filepath="$PROJECT_DIR$/backend/recommender/ContentRecommender/ContentRecommender.iml" />
+      <module fileurl="file://$PROJECT_DIR$/backend/recommender/DataLoader/DataLoader.iml" filepath="$PROJECT_DIR$/backend/recommender/DataLoader/DataLoader.iml" />
+      <module fileurl="file://$PROJECT_DIR$/backend/ECommerceRecommendSystem.iml" filepath="$PROJECT_DIR$/backend/ECommerceRecommendSystem.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/IkkiRecommendSystem.iml" filepath="$PROJECT_DIR$/.idea/IkkiRecommendSystem.iml" />
+      <module fileurl="file://$PROJECT_DIR$/backend/recommender/ItemCFRecommender/ItemCFRecommender.iml" filepath="$PROJECT_DIR$/backend/recommender/ItemCFRecommender/ItemCFRecommender.iml" />
+      <module fileurl="file://$PROJECT_DIR$/backend/recommender/OfflineRecommender/OfflineRecommender.iml" filepath="$PROJECT_DIR$/backend/recommender/OfflineRecommender/OfflineRecommender.iml" />
+      <module fileurl="file://$PROJECT_DIR$/backend/recommender/OnlineRecommender/OnlineRecommender.iml" filepath="$PROJECT_DIR$/backend/recommender/OnlineRecommender/OnlineRecommender.iml" />
+      <module fileurl="file://$PROJECT_DIR$/backend/recommender/StatisticsRecommender/StatisticsRecommender.iml" filepath="$PROJECT_DIR$/backend/recommender/StatisticsRecommender/StatisticsRecommender.iml" />
+      <module fileurl="file://$PROJECT_DIR$/backend/businessServer/businessServer.iml" filepath="$PROJECT_DIR$/backend/businessServer/businessServer.iml" />
     </modules>
   </component>
 </project>

@@ -2,6 +2,9 @@ package com.tqz.business.model.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Product {
 
     @JsonIgnore
@@ -18,6 +21,46 @@ public class Product {
     private String categories;
 
     private String tags;
+
+    private Double originalPrice;
+
+    private Double lowestPrice;
+
+    private int offersNum;
+
+    private RatingInfo ratingInfo;
+
+    public RatingInfo getRatingInfo() {
+        return ratingInfo;
+    }
+
+    public void setRatingInfo(RatingInfo ratingInfo) {
+        this.ratingInfo = ratingInfo;
+    }
+
+    public void setOffersNum(int offersNum) {
+        this.offersNum = offersNum;
+    }
+
+    public Double getOriginalPrice() {
+        return originalPrice;
+    }
+
+    public void setOriginalPrice(Double originalPrice) {
+        this.originalPrice = originalPrice;
+    }
+
+    public Double getLowestPrice() {
+        return lowestPrice;
+    }
+
+    public void setLowestPrice(Double lowestPrice) {
+        this.lowestPrice = lowestPrice;
+    }
+
+    public int getOffersNum() {
+        return offersNum;
+    }
 
     public int getProductId() {
         return productId;

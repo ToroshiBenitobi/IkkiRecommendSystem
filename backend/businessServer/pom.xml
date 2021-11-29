@@ -97,6 +97,7 @@
                 <version>2.2</version>
                 <configuration>
                     <!-- http port -->
+                    <url></url>
                     <port>8088</port>
                     <path>/</path>
                     <contextReloadable>true</contextReloadable>
