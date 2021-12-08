@@ -32,6 +32,12 @@ public class RatingService {
     @Autowired
     private Jedis jedis;
 
+    @Autowired
+    UserService userService;
+
+    @Autowired
+    ProductService productService;
+
     private MongoCollection<Document> ratingCollection;
 
     private MongoCollection<Document> getRatingCollection() {
@@ -54,6 +60,9 @@ public class RatingService {
     public boolean productRating(ProductRatingRequest request) {
         Rating rating = new Rating(request.getUserId(), request.getProductId(), request.getScore());
         updateRedis(rating);
+        if (null == userService.findByUserId(request.getUserId())) return false;
+        if (null == productService.findByProductId(request.getProductId())) return false;
+        if (request.getScore() > 5 || request.getScore() < 1) return false;
         if (ratingExist(rating.getUserId(), rating.getProductId())) {
             return updateRating(rating);
         } else {

@@ -66,6 +66,17 @@
             <artifactId>spring-webmvc</artifactId>
             <version>${spring.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context</artifactId>
+            <version>${spring.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-test</artifactId>
+            <version>${spring.version}</version>
+            <scope>test</scope>
+        </dependency>
         <!-- Spring End -->
 
         <!-- fasterxml -->
@@ -86,6 +97,48 @@
         </dependency>
         <!-- fasterxml end -->
 
+
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.12</version>
+            <scope>test</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.hamcrest</groupId>
+                    <artifactId>hamcrest-core</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.hamcrest</groupId>
+            <artifactId>hamcrest-library</artifactId>
+            <version>1.3</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>ant</groupId>
+            <artifactId>ant-optional</artifactId>
+            <version>1.5.3-1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.ant</groupId>
+            <artifactId>ant</artifactId>
+            <version>1.9.2</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.ant</groupId>
+            <artifactId>ant-launcher</artifactId>
+            <version>1.9.2</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.jcraft</groupId>
+            <artifactId>jsch</artifactId>
+            <version>0.1.50</version>
+        </dependency>
+
     </dependencies>
 
     <build>
@@ -103,6 +156,111 @@
                     <contextReloadable>true</contextReloadable>
                 </configuration>
             </plugin>
+
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <version>0.8.6</version>
+                <executions>
+                    <execution>
+                        <id>default-prepare-agent</id>
+                        <goals>
+                            <goal>prepare-agent</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <!-- Extended Maven antrun plugin -->
+                <!-- https://maven-antrun-extended-plugin.dev.Java.net/ -->
+                <groupId>org.jvnet.maven-antrun-extended-plugin</groupId>
+                <artifactId>maven-antrun-extended-plugin</artifactId>
+                <version>1.8</version>
+                <executions>
+                    <execution>
+                        <id>test-reports</id>
+                        <phase>test</phase>
+                        <configuration>
+                            <tasks>
+                                <junitreport todir="target/surefire-reports">
+                                    <fileset dir="target/surefire-reports">
+                                        <include name="**/*.xml"/>
+                                    </fileset>
+                                    <report format="noframes" todir="target/surefire-reports"/>
+                                </junitreport>
+                            </tasks>
+                        </configuration>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>default-report</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                        <configuration>
+                            <tasks>
+                                <taskdef name="report" classname="org.jacoco.ant.ReportTask"
+                                         classpathref="maven.plugin.classpath"/>
+                                <report>
+                                    <executiondata>
+                                        <file file="${project.build.directory}/jacoco.exec"/>
+                                    </executiondata>
+                                    <structure name="Coverage">
+                                        <classfiles>
+                                            <fileset dir="${project.build.directory}/classes"/>
+                                            <fileset dir="${project.build.directory}/test-classes"/>
+                                        </classfiles>
+                                        <sourcefiles encoding="UTF-8">
+                                            <fileset dir="src/main/java"/>
+                                            <fileset dir="src/test/java"/>
+                                        </sourcefiles>
+                                    </structure>
+                                    <check failonviolation="true" violationsproperty="violation">
+                                        <rule element="BUNDLE">
+                                            <limit counter="INSTRUCTION" value="COVEREDRATIO" minimum="0.01"/>
+                                        </rule>
+                                    </check>
+                                    <html destdir="${project.build.directory}/jacoco-internal"/>
+                                </report>
+                            </tasks>
+                        </configuration>
+                    </execution>
+
+
+                </executions>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.jvnet.maven-antrun-extended-plugin</groupId>
+                        <artifactId>maven-antrun-extended-plugin</artifactId>
+                        <version>1.8</version>
+                    </dependency>
+                    <dependency>
+                        <groupId>org.jacoco</groupId>
+                        <artifactId>jacoco-maven-plugin</artifactId>
+                        <version>0.8.6</version>
+                    </dependency>
+                    <dependency>
+                        <groupId>org.jacoco</groupId>
+                        <artifactId>org.jacoco.ant</artifactId>
+                        <version>0.8.6</version>
+                    </dependency>
+                    <dependency>
+                        <groupId>org.Apache.ant</groupId>
+                        <artifactId>ant-junit</artifactId>
+                        <version>1.8.0</version>
+                    </dependency>
+                    <dependency>
+                        <groupId>org.Apache.ant</groupId>
+                        <artifactId>ant-trax</artifactId>
+                        <version>1.8.0</version>
+                    </dependency>
+                </dependencies>
+            </plugin>
+
         </plugins>
     </build>
 
