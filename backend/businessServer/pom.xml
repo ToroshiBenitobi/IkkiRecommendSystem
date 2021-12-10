@@ -229,8 +229,6 @@
                             </tasks>
                         </configuration>
                     </execution>
-
-
                 </executions>
                 <dependencies>
                     <dependency>
@@ -260,7 +258,6 @@
                     </dependency>
                 </dependencies>
             </plugin>
-
         </plugins>
     </build>
 

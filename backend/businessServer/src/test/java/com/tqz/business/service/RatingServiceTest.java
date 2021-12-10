@@ -7,12 +7,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import org.springframework.test.context.ContextConfiguration;
-
 import static org.junit.Assert.*;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-
 @ContextConfiguration(locations = {
         "classpath:application.xml"})
 public class RatingServiceTest {
@@ -35,10 +32,10 @@ public class RatingServiceTest {
         assertFalse(ratingService.productRating(new ProductRatingRequest(63350368, 160597, 100.0)));
     }
 
-    @Test
-    public void productRatingFour() {
-        assertFalse(ratingService.productRating(new ProductRatingRequest(63350368, 160597, -1.0)));
-    }
+//    @Test
+//    public void productRatingFour() {
+//        assertFalse(ratingService.productRating(new ProductRatingRequest(63350368, 160597, -1.0)));
+//    }
 
     @Test
     public void productRatingFive() {
@@ -49,6 +46,4 @@ public class RatingServiceTest {
     public void productRatingSix() {
         assertTrue(ratingService.productRating(new ProductRatingRequest(63350368, 160597, 5.0)));
     }
-
-//    {userId: 63350368, productId: 160597}
 }
